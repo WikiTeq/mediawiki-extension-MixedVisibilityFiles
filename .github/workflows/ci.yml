@@ -66,6 +66,17 @@ jobs:
           repository: wikimedia/mediawiki
           ref: ${{ matrix.mediawiki }}
 
+      # Disable composer blocking of phpunit/phpunit@9.6.19, core 1.43.5 is
+      # pinned to that version of phpunit and it has a vulnerability. Core was
+      # updated to a newer version but that doesn't change the content of the
+      # tagged version.
+      - name: Bypass PHPUnit vulnerability warning
+        if: ${{ matrix.mediawiki == '1.43.5' }}
+        run: |
+          cp composer.json composer.json.bak
+          cat composer.json.bak | jq '. + {"config": ( .config + { "audit": { "ignore": { "CVE-2026-24765": "Pinned to vulnerable version" } } } ) }' > composer.json
+          rm composer.json.bak
+
       - name: Setup Extension
         uses: actions/checkout@v6
         with:
