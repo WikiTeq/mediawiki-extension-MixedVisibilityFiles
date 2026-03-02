@@ -1,0 +1,40 @@
+{
+	"name": "MixedVisibilityFiles",
+	"author": [
+		"Daniel Scherzer"
+	],
+	"descriptionmsg": "mixedvisibilityfiles-desc",
+	"license-name": "MIT",
+	"@note": "Only list specific tested MediaWiki versions given how unstable the extension is",
+	"requires": {
+		"MediaWiki": "1.39.15"
+	},
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\MixedVisibilityFiles\\": "src/"
+	},
+	"MessagesDirs": {
+		"MixedVisibilityFiles": [
+			"i18n"
+		]
+	},
+	"ExtensionMessagesFiles": {
+		"MixedVisibilityFilesMagic": "MixedVisibilityFiles.magic.php"
+	},
+	"HookHandlers": {
+		"services": {
+			"class": "\\MediaWiki\\Extension\\MixedVisibilityFiles\\ServiceHooks"
+		},
+		"visibility": {
+			"class": "\\MediaWiki\\Extension\\MixedVisibilityFiles\\VisibilityHooks",
+			"services": [
+				"PageProps"
+			]
+		}
+	},
+	"Hooks": {
+		"GetDoubleUnderscoreIDs": "visibility",
+		"getUserPermissionsErrorsExpensive": "visibility",
+		"MediaWikiServices": "services"
+	},
+	"manifest_version": 2
+}
