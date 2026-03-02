@@ -2,6 +2,7 @@
 
 namespace MediaWiki\Extension\MixedVisibilityFiles;
 
+use MediaWiki\FileRepo\AuthenticatedFileEntryPoint;
 use MediaWiki\Permissions\GroupPermissionsLookup;
 use MediaWiki\Permissions\PermissionManager;
 
@@ -14,6 +15,16 @@ class WrappedPermissionsLookup extends GroupPermissionsLookup {
 	}
 
 	public function groupHasPermission( string $group, string $permission ): bool {
+		// 1.43.5:
+		// Intercept JUST the call in AuthenticatedFileEntryPoint::execute()
+		// to `GroupPermissionsLookup::groupHasPermission( '*', 'read' )`
+		// and return false
+		if ( $group === '*'
+			&& $permission === 'read'
+			&& wfGetCaller() === AuthenticatedFileEntryPoint::class . '->execute'
+		) {
+			return false;
+		}
 		return $this->original->groupHasPermission( $group, $permission );
 	}
 
@@ -26,6 +37,7 @@ class WrappedPermissionsLookup extends GroupPermissionsLookup {
 	}
 
 	public function getGroupPermissions( array $groups ): array {
+		// 1.39.15:
 		// Intercept JUST the call in img_auth.php to
 		// `$permissionManager->getGroupPermissions( [ '*' ] )` which
 		// the permission manager delegates to the group permissions lookup,
