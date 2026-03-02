@@ -1,5 +1,9 @@
 <?php
 
+// We run Phan with both MW 1.39 and MW 1.43, the suppression from 1.39 isn't
+// needed on 1.43 and phan would complain about that
+// @phan-file-suppress UnusedPluginSuppression,UnusedPluginFileSuppression
+
 namespace MediaWiki\Extension\MixedVisibilityFiles;
 
 use MediaWiki\FileRepo\AuthenticatedFileEntryPoint;
@@ -21,6 +25,9 @@ class WrappedPermissionsLookup extends GroupPermissionsLookup {
 		// and return false
 		if ( $group === '*'
 			&& $permission === 'read'
+			// Exists for 1.43.5; class does not need to exist for `::class`
+			// to work
+			// @phan-suppress-next-line PhanUndeclaredClassReference
 			&& wfGetCaller() === AuthenticatedFileEntryPoint::class . '->execute'
 		) {
 			return false;
