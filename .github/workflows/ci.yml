@@ -25,7 +25,7 @@ jobs:
           php-version: ${{ matrix.php }}
           extensions: mbstring, intl
           coverage: none
-          tools: composer, phpcs, phplint
+          tools: composer:2.8.12, phpcs, phplint
 
       - name: Setup Extension
         uses: actions/checkout@v6
@@ -47,10 +47,10 @@ jobs:
       matrix:
         # Only the versions of MediaWiki that are explicitly supported
         include:
-          - php: '8.1'
-            mediawiki: '1.39.15'
           - php: '8.3'
             mediawiki: '1.43.5'
+          - php: '8.3'
+            mediawiki: '1.43.8'
     steps:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -58,7 +58,7 @@ jobs:
           php-version: ${{ matrix.php }}
           extensions: mbstring, intl, ast
           coverage: none
-          tools: composer
+          tools: composer:2.8.12
 
       - name: Setup MediaWiki
         uses: actions/checkout@v6
@@ -101,10 +101,10 @@ jobs:
       matrix:
         # Only the versions of MediaWiki that are explicitly supported
         include:
-          - php: '8.1'
-            mediawiki: '1.39.15'
           - php: '8.3'
             mediawiki: '1.43.5'
+          - php: '8.3'
+            mediawiki: '1.43.8'
     steps:
       - name: Setup Extension
         uses: actions/checkout@v6
