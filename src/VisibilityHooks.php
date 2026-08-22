@@ -29,8 +29,15 @@ class VisibilityHooks implements
 		&$result
 	) {
 		// Most of the time we aren't interested in doing anything, simplest
-		// checks first
-		if ( MW_ENTRY_POINT !== 'img_auth' ) {
+		// checks first. img_auth.php streams original files, while thumb.php /
+		// thumb_handler.php stream (and generate) thumbnails and transcoded
+		// media; all of them skip their own permission checks while `*` has
+		// the `read` right.
+		$entryPoint = MW_ENTRY_POINT;
+		if ( $entryPoint !== 'img_auth'
+			&& $entryPoint !== 'thumb'
+			&& $entryPoint !== 'thumb_handler'
+		) {
 			return;
 		}
 		// Only trying to affect file reads by anonymous users

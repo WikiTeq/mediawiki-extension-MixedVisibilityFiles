@@ -9,10 +9,18 @@ use MediaWiki\Permissions\GroupPermissionsLookup;
 
 class ServiceHooks implements MediaWikiServicesHook {
 
+	/**
+	 * Entry points that stream file content gated on whether `*` has the
+	 * `read` right. Core's own per-file permission checks are skipped on all
+	 * of them while that right is present, so each one needs the wrapped
+	 * GroupPermissionsLookup to report a non-public wiki.
+	 */
+	private const WRAPPED_ENTRY_POINTS = [ 'img_auth', 'thumb', 'thumb_handler' ];
+
 	/** @inheritDoc */
 	public function onMediaWikiServices( $container ) {
 		// Not always needed
-		if ( MW_ENTRY_POINT !== 'img_auth' ) {
+		if ( !in_array( MW_ENTRY_POINT, self::WRAPPED_ENTRY_POINTS, true ) ) {
 			return;
 		}
 		$container->redefineService(

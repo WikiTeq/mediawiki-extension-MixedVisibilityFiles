@@ -3,6 +3,7 @@
 namespace MediaWiki\Extension\MixedVisibilityFiles;
 
 use MediaWiki\FileRepo\AuthenticatedFileEntryPoint;
+use MediaWiki\FileRepo\ThumbnailEntryPoint;
 use MediaWiki\Permissions\GroupPermissionsLookup;
 
 class WrappedPermissionsLookup extends GroupPermissionsLookup {
@@ -20,6 +21,14 @@ class WrappedPermissionsLookup extends GroupPermissionsLookup {
 		if ( $group === '*'
 			&& $permission === 'read'
 			&& wfGetCaller() === AuthenticatedFileEntryPoint::class . '->execute'
+		) {
+			return false;
+		}
+		// Same for the per-file gate in ThumbnailEntryPoint::maybeDenyAccess(),
+		// which otherwise skips all thumbnail permission checks on public wikis
+		if ( $group === '*'
+			&& $permission === 'read'
+			&& wfGetCaller() === ThumbnailEntryPoint::class . '->maybeDenyAccess'
 		) {
 			return false;
 		}
