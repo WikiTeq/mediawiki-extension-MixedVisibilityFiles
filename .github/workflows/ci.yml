@@ -34,7 +34,7 @@ jobs:
         run: composer update
 
       - name: Lint
-        run: phplint -w --exclude=vendor
+        run: phplint lint -w --exclude=vendor
 
       - name: PHP Code Sniffer
         run: vendor/bin/phpcs -sp --standard=.phpcs.xml .
